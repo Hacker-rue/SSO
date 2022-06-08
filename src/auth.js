@@ -43,6 +43,13 @@ module.exports = {
         })
     },
 
+    generateMessage: () => {
+        var message = ""
+        for(i = 0; i < 24; i++) {
+            value += possible.charAt(randomInt(possible.length - 1))
+        }
+    },
+
 
     signin: (did, value, signature) => {
         return new Promise(async (resolve, reject) => {
