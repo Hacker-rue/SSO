@@ -17,12 +17,12 @@ app.get("/auth", cors(), (req, res) => {
     var body = req.query
 })
 
-app.post("/auth/did", cors(), (req, res) => {
+app.post("/auth/login", cors(), (req, res) => {
 
 })
 
 
-app.post("/answer", cors(), bodyParser.json(), (req, res) => {
+app.post("/response", cors(), bodyParser.json(), (req, res) => {
 
 })
 
