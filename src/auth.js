@@ -44,7 +44,7 @@ module.exports = {
     },
 
 
-    login: (did, value, signature) => {
+    signin: (did, value, signature) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var didDocument = await core.resolveDIDDocument(did)
