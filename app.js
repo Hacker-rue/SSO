@@ -14,8 +14,7 @@ const app = express()
 app.use(bodyParser.json())
 
 app.get("/auth", cors(), (req, res) => {
-    var body =  req.query
-    
+    var body = req.query
 })
 
 app.post("/auth/did", cors(), (req, res) => {
