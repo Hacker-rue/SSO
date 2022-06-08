@@ -9,39 +9,39 @@ const possible = "abcdfe0123456789"
 
 module.exports = {
 
-    auth: (did) => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                if(await checkDID(did) == true) {
-                    var didDocument = await core.resolveDIDDocument(did)
-                    if(didDocument == undefined) {
-                        reject({
-                            status: false,
-                            value: "Error: There is no didDocument under such a did!"
-                        })
-                    }
-                    var value = ""
-                    for(i = 0; i < 20; i++) {
-                        value += possible.charAt(randomInt(possible.length - 1))
-                    }
-                    resolve({
-                        status: true,
-                        value: value
-                    })
-                } else {
-                    reject({
-                        status: false,
-                        value: "Error: Сheck the did!"
-                    })
-                }
-            } catch {
-                reject({
-                    status: false,
-                    value: "Error: Сheck the did!"
-                })
-            }
-        })
-    },
+    // auth: (did) => {
+    //     return new Promise(async (resolve, reject) => {
+    //         try {
+    //             if(await checkDID(did) == true) {
+    //                 var didDocument = await core.resolveDIDDocument(did)
+    //                 if(didDocument == undefined) {
+    //                     reject({
+    //                         status: false,
+    //                         value: "Error: There is no didDocument under such a did!"
+    //                     })
+    //                 }
+    //                 var value = ""
+    //                 for(i = 0; i < 20; i++) {
+    //                     value += possible.charAt(randomInt(possible.length - 1))
+    //                 }
+    //                 resolve({
+    //                     status: true,
+    //                     value: value
+    //                 })
+    //             } else {
+    //                 reject({
+    //                     status: false,
+    //                     value: "Error: Сheck the did!"
+    //                 })
+    //             }
+    //         } catch {
+    //             reject({
+    //                 status: false,
+    //                 value: "Error: Сheck the did!"
+    //             })
+    //         }
+    //     })
+    // },
 
     generateMessage: () => {
         var message = ""

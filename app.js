@@ -41,6 +41,8 @@ app.get("/auth", cors(), (req, res) => {
         if(!req.query.method) {
             if(!req.query.data) {
                 req.session.key[req.sessionID] = {
+                    did: "",
+                    authorized: false,
                     value: auth.generateMessage(),
                     endpoint: req.query.endpoint,
                     data: req.query.data
@@ -65,12 +67,19 @@ app.get("/auth", cors(), (req, res) => {
 })
 
 app.post("/auth/login", cors(), (req, res) => {
-
+    
 })
 
 
-app.post("/response", cors(), bodyParser.json(), (req, res) => {
+app.post("/response", cors(), async (req, res) => {
+    //Тут должна быть проверка что запрос прислало именно наше приложение
 
+    var check = auth.signin(req.body.did, req.session.key[req.body.sessionToken], req.body.parameter)
+
+    if(check) {
+        req.session.key[req.body.sessionToken].did = req.body.did,
+        req.session.key[req.body.sessionToken].authorized = true
+    }
 })
 
 
