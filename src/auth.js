@@ -46,8 +46,9 @@ module.exports = {
     generateMessage: () => {
         var message = ""
         for(i = 0; i < 24; i++) {
-            value += possible.charAt(randomInt(possible.length - 1))
+            message += possible.charAt(randomInt(possible.length - 1))
         }
+        return message
     },
 
 

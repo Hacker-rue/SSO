@@ -4,7 +4,7 @@ const cors = require('cors')
 const session = require('express-session')
 const redisStorage = require('connect-redis')(session)
 const redis = require('redis')
-const clientSession = redis.createClient()
+const clientSession = redis.createClient({ legacyMode: true })
 
 const { TonClient } = require('@tonclient/core')
 const { libNode } = require('@tonclient/lib-node')
@@ -14,11 +14,11 @@ const auth = require('./src/auth')
 const host = "127.0.0.1"
 const port = "3000"
 
-
 const app = express()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
 
 app.use(
     session({
@@ -27,14 +27,16 @@ app.use(
             port: 6379,
             client: clientSession,
         }),
-        secret: 'you secret key',
+        secret: 'session',
         saveUninitialized: true,
+        resave: false
     })
 )
 
 app.get("/auth", cors(), (req, res) => {
     if(!req.session.key) {
         req.session.key = req.sessionID
+        console.log(req.sessionID)
     }
 
     if(!req.query.endpoint) {
@@ -64,6 +66,8 @@ app.get("/auth", cors(), (req, res) => {
     } else {
         res.sendStatus(400)
     }
+    console.log(req.sessionID)
+    res.send('Session ID :  '+ req.sessionID)
 })
 
 app.post("/auth/login", cors(), (req, res) => {
@@ -84,8 +88,8 @@ app.post("/response", cors(), async (req, res) => {
 
 
 
-app.listen(port, host, () => {
+app.listen(port, host, async () => {
     console.log(`Server listens http://${host}:${port}`)
+    await clientSession.connect()
     TonClient.useBinaryLibrary(libNode)
 })
-
