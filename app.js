@@ -68,10 +68,17 @@ app.get("/auth", cors(), (req, res) => {
 
 })
 
+app.get("/request", cors(), (req, res) => {
+     if(req.body?.did && req.body?.parameters && req.body?.sessionToken) {
+         //Code
+     } else {
+         res.sendStatus(404);
+     }
+})
+
 app.post("/auth/login", cors(), (req, res) => {
     
 })
-
 
 app.post("/response", cors(), async (req, res) => {
     //Тут должна быть проверка что запрос прислало именно наше приложение
@@ -83,8 +90,6 @@ app.post("/response", cors(), async (req, res) => {
         req.session.key[req.body.sessionToken].authorized = true
     }
 })
-
-
 
 app.listen(port, host, async () => {
     console.log(`Server listens http://${host}:${port}`)
