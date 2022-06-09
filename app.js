@@ -36,38 +36,36 @@ app.use(
 app.get("/auth", cors(), (req, res) => {
     if(!req.session.key) {
         req.session.key = req.sessionID
-        console.log(req.sessionID)
     }
 
-    if(!req.query.endpoint) {
-        if(!req.query.method) {
-            if(!req.query.data) {
-                req.session.key[req.sessionID] = {
-                    did: "",
-                    authorized: false,
-                    value: auth.generateMessage(),
-                    endpoint: req.query.endpoint,
-                    data: req.query.data
-                }
-            } else {
-                req.session.key[req.sessionID] = {
-                    value: auth.generateMessage(),
-                    endpoint: req.query.endpoint
-                }
+    if(!req?.query?.endpoint && !req?.query?.method) {
+        if(!req.query?.data) {
+            req.session.key[req.sessionID] = {
+                did: "",
+                authorized: false,
+                value: auth.generateMessage(),
+                endpoint: req.query.endpoint,
+                data: req.query.data
             }
-
-            var dataQr = {
-                endpoint: `http://${host}:${port}/response`,
-                method: "post",
-                message: req.session.key[req.sessionID].value,
-                sessionToken: req.sessionID
+        } else {
+            req.session.key[req.sessionID] = {
+                did: "",
+                authorized: false,
+                value: auth.generateMessage(),
+                endpoint: req.query.endpoint
             }
+        }
+        var dataQr = {
+            endpoint: `http://${host}:${port}/response`,
+            method: "post",
+            message: req.session.key[req.sessionID].value,
+            sessionToken: req.sessionID
         }
     } else {
         res.sendStatus(400)
     }
-    console.log(req.sessionID)
-    res.send('Session ID :  '+ req.sessionID)
+
+
 })
 
 app.post("/auth/login", cors(), (req, res) => {
