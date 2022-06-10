@@ -16,6 +16,10 @@ const port = "3000"
 
 const app = express()
 
+let Session = {
+
+}
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -34,10 +38,8 @@ app.use(
 )
 
 app.get("/auth", cors(), (req, res) => {
-    if(!req.session.key) req.session.key = req.sessionID
-
     if(req?.query?.endpoint && req?.query?.method) {
-        req.session.message = auth.generateMessage()
+        Session[req.sessionID] = auth.generateMessage()
         req.session.endpoint = req.query.endpoint
         req.session.method = req.query.method
         if(req.query?.data) req.session.data = req.query.data
@@ -45,7 +47,7 @@ app.get("/auth", cors(), (req, res) => {
         var dataQr = {
             endpoint: `http://${host}:${port}/response`,
             method: "post",
-            message: req.session.message,
+            message: Session[req.sessionID],
             sessionToken: req.sessionID
         }
         console.log(dataQr)
@@ -55,26 +57,20 @@ app.get("/auth", cors(), (req, res) => {
     }
 })
 
-
-app.get("/", cors(), (req, res) => {
-    // if(!req.session.key) req.session.key = req.query.sessionID
-    res.send(req.session[req.query.sessionID])
-})
-
 app.get("/request", cors(), (req, res) => {
     if(!req.session.key) {
         res.sendStatus(403)
     } else {
-        if(req.session.key[req.sessionID].authorized) {
+        if(Session[req.sessionID].authorized) {
             // res.send(JSON.stringify({
             //     did: req.session.key[req.sessionID],
             //     authorized: req.session.key[req.sessionID]
             // }))
             res.json({
-                did: req.session.key[req.sessionID],
-                authorized: req.session.key[req.sessionID]
+                did: Session[req.sessionID].did,
+                authorized: Session[req.sessionID].authorized
             })
-            res.redirect(req.session.key[req.sessionID].endpoint)
+            res.redirect(req.session.endpoint)
         } else {
             res.sendStatus(102)
         }
@@ -89,10 +85,11 @@ app.get("/request", cors(), (req, res) => {
 app.post("/response", cors(), async (req, res) => {
     //Тут должна быть проверка что запрос прислало именно наше приложение
     if(req.body?.did && req.body?.parameter && req.body?.sessionToken) {
-        var check = auth.signin(req.body.did, req.session.key[req.body.sessionToken], req.body.parameter)
+        var check = auth.signin(req.body.did, Session[req.body.sessionToken], req.body.parameter)
         if(check) {
-            req.session.key[req.body.sessionToken].did = req.body.did,
-            req.session.key[req.body.sessionToken].authorized = true
+            Session[req.body.sessionToken].did = req.body.did
+            Session[req.body.sessionToken].authorized = true
+            res.sendStatus(200)
         } else {
             res.sendStatus(401)
         }
