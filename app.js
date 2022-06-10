@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const cors = require('cors')
+const cors = require('cors')  
 const session = require('express-session')
 const redisStorage = require('connect-redis')(session)
 const redis = require('redis')
