@@ -8,6 +8,7 @@ const clientSession = redis.createClient({ legacyMode: true })
 
 const { TonClient } = require('@tonclient/core')
 const { libNode } = require('@tonclient/lib-node')
+const { initSettings } = require('everscale-did-sdk-radiance')
 
 const auth = require('./src/auth')
 
@@ -105,5 +106,5 @@ app.post("/response", cors(), async (req, res) => {
 app.listen(port, host, async () => {
     console.log(`Server listens http://${host}:${port}`)
     await clientSession.connect()
-    TonClient.useBinaryLibrary(libNode)
+    initSettings("devNet", libNode)
 })
